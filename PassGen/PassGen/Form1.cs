@@ -30,20 +30,47 @@ namespace PassGen {
             };
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e) {
-            if(checkBox1.Checked) {
-                button1.Enabled = false;
-                PWbox.Enabled = true;
-                panel1.Enabled = false;
+        private void button3_Click(object sender, EventArgs e) {
+            if(PWbox.Text != "" && NameBox.Text != "") {
+                dataGridView1.Rows.Add(false, NameBox.Text, PWbox.Text);
             } else {
-                button1.Enabled = true;
-                PWbox.Enabled = false;
-                panel1.Enabled = true;
-            };
+                MessageBox.Show("You have either not generated/inserted a password or you have not inserted an Account Name.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void button3_Click(object sender, EventArgs e) {
-            dataGridView1.Rows.Add(false, NameBox.Text, PWbox.Text);
+        private void button1_Click(object sender, EventArgs e) {
+            Random rnd = new Random();
+            var list = new List<int>();
+            for (int j = 65; j < 90; j++) {
+                list.Add(j);
+            };
+            for (int j = 97; j < 122; j++) {
+                list.Add(j);
+            };
+            string pw = "";
+            if (checkBox2.Checked) {
+                for (int j = 48; j < 57; j++) {
+                    list.Add(j);
+                };
+            };
+            if(checkBox3.Checked) {
+                for (int j = 33; j < 47; j++) {
+                    list.Add(j);
+                };
+                for (int j = 58; j < 64; j++) {
+                    list.Add(j);
+                };
+                for (int j = 91; j < 96; j++) {
+                    list.Add(j);
+                };
+                for (int j = 123; j < 126; j++) {
+                    list.Add(j);
+                };
+            }
+            for (int i = 0; i < numericUpDown1.Value; i++) {
+                pw = pw + Convert.ToString(char.ConvertFromUtf32(list.ToArray()[rnd.Next(0, list.ToArray().Length)]));
+            }
+            PWbox.Text = pw;
         }
     }
 }
