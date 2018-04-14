@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,7 +15,28 @@ namespace PassGen {
             InitializeComponent();
         }
 
+        private string GetPass() {
+            Form2 pw = new Form2();
+            pw.ShowDialog();
+
+            string pass = pw.Data();
+
+            return pass;
+        }
+
+        private string DeriveKey(string input) {
+            return input;
+        }
+
         private void Form1_Load(object sender, EventArgs e) {
+            string EncryptKey = "";
+            do {
+                EncryptKey = GetPass();
+            } while (EncryptKey == "");
+            EncryptKey = DeriveKey(EncryptKey);
+
+            button1.Text = EncryptKey;
+
             button1.Left = (this.ClientSize.Width - ((button1.Width + 30) + button1.Width)) / 2;
             button3.Left = (this.ClientSize.Width - (button3.Width - (button3.Width + 30))) / 2;
             button2.Left = (this.ClientSize.Width - button2.Width) / 2;
