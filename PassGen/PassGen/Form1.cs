@@ -35,8 +35,6 @@ namespace PassGen {
             } while (EncryptKey == "");
             EncryptKey = DeriveKey(EncryptKey);
 
-            button1.Text = EncryptKey;
-
             button1.Left = (this.ClientSize.Width - ((button1.Width + 30) + button1.Width)) / 2;
             button3.Left = (this.ClientSize.Width - (button3.Width - (button3.Width + 30))) / 2;
             button2.Left = (this.ClientSize.Width - button2.Width) / 2;
