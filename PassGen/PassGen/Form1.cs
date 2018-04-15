@@ -34,6 +34,7 @@ namespace PassGen {
                 EncryptKey = GetPass();
             } while (EncryptKey == "");
             EncryptKey = DeriveKey(EncryptKey);
+            MessageBox.Show("Your key is : " + EncryptKey, "Encryption Key", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             button1.Left = (this.ClientSize.Width - ((button1.Width + 30) + button1.Width)) / 2;
             button3.Left = (this.ClientSize.Width - (button3.Width - (button3.Width + 30))) / 2;
@@ -90,7 +91,22 @@ namespace PassGen {
             for (int i = 0; i < numericUpDown1.Value; i++) {
                 pw = pw + Convert.ToString(char.ConvertFromUtf32(list.ToArray()[rnd.Next(0, list.ToArray().Length)]));
             }
+            if(checkBox1.Checked) {
+                pw = pw.ToLower();
+            };
             PWbox.Text = pw;
+        }
+
+        private void dataGridView1_MouseClick(object sender, MouseEventArgs e) {
+            if(e.Button == MouseButtons.Right) {
+                if(dataGridView1.SelectedCells.Count == 1 && dataGridView1.CurrentCell.ColumnIndex != 0) {
+                    contextMenuStrip1.Show(dataGridView1, new Point(e.X, e.Y));
+                };
+            };
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e) {
+            Clipboard.SetText(Convert.ToString(dataGridView1.CurrentCell.Value));
         }
     }
 }
