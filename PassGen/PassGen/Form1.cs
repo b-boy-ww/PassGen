@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -8,9 +8,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace PassGen {
     public partial class Form1 : Form {
+        string path = "D:/Desktop/store.dat";
         public Form1() {
             InitializeComponent();
         }
@@ -29,11 +31,21 @@ namespace PassGen {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
+            string json = File.ReadAllText(path);
+            List<AcctPW> logins = JsonConvert.DeserializeObject<List<AcctPW>>(json);
+            for(int i = 0; i < logins.ToArray().Length; i++) {
+                dataGridView1.Rows.Add(false, logins.ToArray()[i].accountName, logins.ToArray()[i].password);
+            }
             string EncryptKey = "";
             do {
                 EncryptKey = GetPass();
             } while (EncryptKey == "");
             EncryptKey = DeriveKey(EncryptKey);
+
+            if (!File.Exists(path)) {
+                File.WriteAllText(path, "[]");
+            }
+
             MessageBox.Show("Your key is : " + EncryptKey, "Encryption Key", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             button1.Left = (this.ClientSize.Width - ((button1.Width + 30) + button1.Width)) / 2;
@@ -52,8 +64,17 @@ namespace PassGen {
         }
 
         private void button3_Click(object sender, EventArgs e) {
-            if(PWbox.Text != "" && NameBox.Text != "") {
+            string json = File.ReadAllText(path);
+            List<AcctPW> logins = JsonConvert.DeserializeObject<List<AcctPW>>(json);
+            if (PWbox.Text != "" && NameBox.Text != "") {
+                AcctPW account = new AcctPW();
+                account.password = PWbox.Text;
+                account.accountName = NameBox.Text;
                 dataGridView1.Rows.Add(false, NameBox.Text, PWbox.Text);
+                logins.Add(account);
+
+                string output = JsonConvert.SerializeObject(logins);
+                File.WriteAllText(path, output);
             } else {
                 MessageBox.Show("You have either not generated/inserted a password or you have not inserted an Account Name.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
