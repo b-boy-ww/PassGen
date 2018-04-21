@@ -12,7 +12,8 @@ using Newtonsoft.Json;
 
 namespace PassGen {
     public partial class Form1 : Form {
-        string path = "D:/Desktop/store.dat";
+        string directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WillMW";
+        string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WillMW\\store.dat";
         public Form1() {
             InitializeComponent();
         }
@@ -31,6 +32,15 @@ namespace PassGen {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
+
+            if (!Directory.Exists(directory)) {
+                Directory.CreateDirectory(directory);
+            }
+            
+            if (!File.Exists(path)) {
+                File.WriteAllText(path, "[]");
+            }
+            //MessageBox.Show("Your path is : " + path, "Password", MessageBoxButtons.OK, MessageBoxIcon.Information);
             string json = File.ReadAllText(path);
             List<AcctPW> logins = JsonConvert.DeserializeObject<List<AcctPW>>(json);
             for(int i = 0; i < logins.ToArray().Length; i++) {
@@ -39,14 +49,14 @@ namespace PassGen {
             string EncryptKey = "";
             do {
                 EncryptKey = GetPass();
+                if(EncryptKey == "NULLVALUE1234NOTAPASSWORD!!!THECHANCEOFTHISBEINGCHOSENISEXTREMELYLOWDEARGODIFTHISHAPPENSYOUREASSFUCKED!") {
+                    this.Close();
+                }
             } while (EncryptKey == "");
             EncryptKey = DeriveKey(EncryptKey);
 
-            if (!File.Exists(path)) {
-                File.WriteAllText(path, "[]");
-            }
 
-            MessageBox.Show("Your key is : " + EncryptKey, "Encryption Key", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Your key is : " + EncryptKey, "Encryption Key", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             button1.Left = (this.ClientSize.Width - ((button1.Width + 30) + button1.Width)) / 2;
             button3.Left = (this.ClientSize.Width - (button3.Width - (button3.Width + 30))) / 2;

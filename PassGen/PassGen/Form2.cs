@@ -18,7 +18,7 @@ namespace PassGen {
         }
 
         private void button1_Click(object sender, EventArgs e) {
-            this.Close();
+            this.Hide();
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e) {
@@ -31,6 +31,12 @@ namespace PassGen {
 
         private void Form2_Load(object sender, EventArgs e) {
             button1.Left = (this.ClientSize.Width - button1.Width) / 2;
+        }
+
+        private void Form2_FormClosing(object sender, FormClosingEventArgs e) {
+            if(e.CloseReason.Equals(CloseReason.UserClosing)) {
+                textBox1.Text = "NULLVALUE1234NOTAPASSWORD!!!THECHANCEOFTHISBEINGCHOSENISEXTREMELYLOWDEARGODIFTHISHAPPENSYOUREASSFUCKED!";
+            }
         }
     }
 }
