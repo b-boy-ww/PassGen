@@ -10,6 +10,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 
+/*
+    ~~~~~~~~~~~~~~~ Git ~~~~~~~~~~~~~~~
+    | www.github.com/b-boy-ww/PassGen |
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
+
 namespace PassGen {
     public partial class Form1 : Form {
         string directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\WillMW";
@@ -28,7 +34,14 @@ namespace PassGen {
         }
 
         private string DeriveKey(string input) {
-            return input;
+            MD5 md5 = MD5.Create();
+            byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+            byte[] hash = md5.ComputeHash(inputBytes);
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++) {
+                output.Append(hash[i].ToString("X2"));
+            }
+            return output.ToString();
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -40,7 +53,9 @@ namespace PassGen {
             if (!File.Exists(path)) {
                 File.WriteAllText(path, "[]");
             }
+
             //MessageBox.Show("Your path is : " + path, "Password", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             string json = File.ReadAllText(path);
             List<AcctPW> logins = JsonConvert.DeserializeObject<List<AcctPW>>(json);
             for(int i = 0; i < logins.ToArray().Length; i++) {
@@ -55,7 +70,7 @@ namespace PassGen {
             } while (EncryptKey == "");
             EncryptKey = DeriveKey(EncryptKey);
 
-
+            PWbox.Text = EncryptKey;
             //MessageBox.Show("Your key is : " + EncryptKey, "Encryption Key", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             button1.Left = (this.ClientSize.Width - ((button1.Width + 30) + button1.Width)) / 2;
